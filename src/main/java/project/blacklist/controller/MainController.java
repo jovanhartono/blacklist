@@ -26,6 +26,7 @@ public class MainController {
                     appUserRegistered.getUsername(),
                     appUserRegistered.getPhoneNumber(),
                     appUserRegistered.getPassword(),
+
                     appUserRegistered.getEmail());
             return new ResponseEntity<>(HttpStatus.CREATED);
         }

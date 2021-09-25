@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.blacklist.model.LoginRequest;
 import project.blacklist.model.RegisterRequest;
 import project.blacklist.service.UserService;
 
@@ -11,23 +12,29 @@ import project.blacklist.service.UserService;
 @RequestMapping("/api")
 public class MainController {
     @Autowired
-    UserService userService;
+    private UserService userService;
 
-    @CrossOrigin(origins = "http://localhost:4200")
-    @GetMapping("/user")
-    public ResponseEntity<String> getUserData(){
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest appUserLogin){
+        try{
+            return new ResponseEntity<>(
+                    this.userService.loginUser(
+                            appUserLogin.getEmail(),
+                            appUserLogin.getPassword()).toString()
+                    ,HttpStatus.OK);
+        }
+        catch (IllegalStateException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/register")
-    public ResponseEntity<String> insertUserData(@RequestBody RegisterRequest appUserRegistered){
+    public ResponseEntity<String> register(@RequestBody RegisterRequest appUserRegistered){
         try{
             this.userService.registerUser(
                     appUserRegistered.getUsername(),
                     appUserRegistered.getPhoneNumber(),
                     appUserRegistered.getPassword(),
-
                     appUserRegistered.getEmail());
             return new ResponseEntity<>(HttpStatus.CREATED);
         }

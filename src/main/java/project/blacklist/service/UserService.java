@@ -5,6 +5,6 @@ import project.blacklist.dto.AppUser;
 
 @Service
 public interface UserService {
-    AppUser getUser(Long id);
-    void registerUser(String username, Long phoneNumber, String password, String email);
+    AppUser loginUser(String email, String password);
+    void registerUser(String username, String phoneNumber, String password, String email);
 }

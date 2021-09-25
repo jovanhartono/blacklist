@@ -10,32 +10,47 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImplementation implements UserService {
-    @Autowired
-    UserRepository userRepository;
 
-    @Override
-    public AppUser getUser(Long id) {
-        Optional<AppUser> user = userRepository.getAppUserById(id);
-        return user.orElse(null);
+    private final UserRepository userRepository;
+    private final String DELIMITER = " | ";
+
+    @Autowired
+    public UserServiceImplementation(UserRepository userRepository){
+        this.userRepository = userRepository;
     }
 
     @Override
-    public void registerUser(String username, Long phoneNumber, String password, String email) throws IllegalStateException{
+    public AppUser loginUser(String email, String password) throws IllegalStateException{
+        Optional<AppUser> userLogin = userRepository.getAppUserByEmail(email);
+        String exceptionMessage = "not match!";
+        if (userLogin.isEmpty()){
+            throw new IllegalStateException("email " + exceptionMessage);
+        }
+        else{
+            int isPasswordMatch = userLogin.get().getPassword().compareTo(password);
+            if (isPasswordMatch == 0){
+                return userLogin.get();
+            }
+            else throw new IllegalStateException("password " + exceptionMessage);
+        }
+    }
+
+    @Override
+    public void registerUser(String username, String phoneNumber, String password, String email) throws IllegalStateException{
         Optional<AppUser> userByEmail = userRepository.getAppUserByEmail(email);
         Optional<AppUser> userByPhoneNumber = userRepository.getAppUserByPhoneNumber(phoneNumber);
         Optional<AppUser> userByUsername = userRepository.getAppUserByUsername(username);
 
         if (userByEmail.isPresent() || userByUsername.isPresent() || userByPhoneNumber.isPresent()){
-            String delimiter = " | ";
             String exceptionMessage = "already exist!";
             if (userByEmail.isPresent()){
-                exceptionMessage = "email" + delimiter + exceptionMessage;
+                exceptionMessage = "email" + this.DELIMITER + exceptionMessage;
             }
             if (userByPhoneNumber.isPresent()){
-                exceptionMessage = "number" + delimiter + exceptionMessage;
+                exceptionMessage = "number" + this.DELIMITER + exceptionMessage;
             }
             if(userByUsername.isPresent()){
-                exceptionMessage = "username" + delimiter + exceptionMessage;
+                exceptionMessage = "username" + this.DELIMITER + exceptionMessage;
             }
 
             throw new IllegalStateException(exceptionMessage);

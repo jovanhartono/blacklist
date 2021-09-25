@@ -29,5 +29,5 @@ public class AppUser {
     private String password;
     @NotNull
     @Column(unique = true)
-    private Long phoneNumber;
+    private String phoneNumber;
 }

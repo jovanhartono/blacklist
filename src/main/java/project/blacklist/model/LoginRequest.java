@@ -9,13 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class RegisterRequest {
-    private String username;
-    private String phoneNumber;
-    private String password;
+public class LoginRequest {
     private String email;
-
-    public String getUsername(){
-        return this.username;
-    }
+    private String password;
 }

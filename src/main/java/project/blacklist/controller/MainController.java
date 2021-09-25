@@ -13,6 +13,7 @@ public class MainController {
     @Autowired
     UserService userService;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/user")
     public ResponseEntity<String> getUserData(){
         return new ResponseEntity<>(HttpStatus.OK);

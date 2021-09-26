@@ -1,8 +1,8 @@
-package project.blacklist.dao;
+package project.blacklist.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import project.blacklist.dto.AppUser;
+import project.blacklist.model.AppUser;
 
 import java.util.Optional;
 

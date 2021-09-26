@@ -1,7 +1,7 @@
 package project.blacklist.service;
 
 import org.springframework.stereotype.Service;
-import project.blacklist.dto.AppUser;
+import project.blacklist.model.AppUser;
 
 @Service
 public interface UserService {

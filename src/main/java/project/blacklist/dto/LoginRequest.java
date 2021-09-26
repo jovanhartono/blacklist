@@ -1,4 +1,4 @@
-package project.blacklist.model;
+package project.blacklist.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

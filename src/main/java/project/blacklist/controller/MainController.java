@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.blacklist.model.LoginRequest;
-import project.blacklist.model.RegisterRequest;
+import project.blacklist.dto.LoginRequest;
+import project.blacklist.dto.RegisterRequest;
 import project.blacklist.service.UserService;
 
 @RestController

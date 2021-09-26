@@ -2,8 +2,8 @@ package project.blacklist.service.implementation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import project.blacklist.dao.UserRepository;
-import project.blacklist.dto.AppUser;
+import project.blacklist.repository.UserRepository;
+import project.blacklist.model.AppUser;
 import project.blacklist.service.UserService;
 
 import java.util.Optional;

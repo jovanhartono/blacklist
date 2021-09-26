@@ -12,7 +12,7 @@ import java.util.Optional;
 public class UserServiceImplementation implements UserService {
 
     private final UserRepository userRepository;
-    private final String DELIMITER = " | ";
+    public static final String DELIMITER = " | ";
 
     @Autowired
     public UserServiceImplementation(UserRepository userRepository){
@@ -44,13 +44,13 @@ public class UserServiceImplementation implements UserService {
         if (userByEmail.isPresent() || userByUsername.isPresent() || userByPhoneNumber.isPresent()){
             String exceptionMessage = "already exist!";
             if (userByEmail.isPresent()){
-                exceptionMessage = "email" + this.DELIMITER + exceptionMessage;
+                exceptionMessage = "email" + DELIMITER + exceptionMessage;
             }
             if (userByPhoneNumber.isPresent()){
-                exceptionMessage = "number" + this.DELIMITER + exceptionMessage;
+                exceptionMessage = "number" + DELIMITER + exceptionMessage;
             }
             if(userByUsername.isPresent()){
-                exceptionMessage = "username" + this.DELIMITER + exceptionMessage;
+                exceptionMessage = "username" + DELIMITER + exceptionMessage;
             }
 
             throw new IllegalStateException(exceptionMessage);

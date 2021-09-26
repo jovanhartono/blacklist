@@ -5,7 +5,7 @@ spring:
     password: hartono7213
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQL81Dialect

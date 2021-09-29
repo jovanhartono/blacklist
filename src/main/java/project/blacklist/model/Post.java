@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -26,6 +27,8 @@ public class Post {
     private LocalDateTime createdAt;
     private Integer likeCount = 0;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userID", referencedColumnName = "userID")
+    @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false)
     private AppUser appUser;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Suspect> suspect;
 }

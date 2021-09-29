@@ -18,6 +18,6 @@ public class PostImage {
     private Long postImageID;
     private String image;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postID", referencedColumnName = "postID")
+    @JoinColumn(name = "postID", referencedColumnName = "postID", nullable = false)
     private Post post;
 }

@@ -22,9 +22,9 @@ public class Comment {
     private String text;
     private LocalDateTime createdAt;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postID", referencedColumnName = "postID")
+    @JoinColumn(name = "postID", referencedColumnName = "postID", nullable = false)
     private Post postID;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userID", referencedColumnName = "userID")
+    @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false)
     private AppUser userID;
 }

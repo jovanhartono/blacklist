@@ -22,6 +22,6 @@ public class SuspectPaymentDetail {
     @NotNull(message = "bank account cannot be null or empty!")
     private String bankAccountNumber;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "suspectID", referencedColumnName = "suspectID")
+    @JoinColumn(name = "suspectID", referencedColumnName = "suspectID", nullable = false)
     private Suspect suspect;
 }

@@ -14,8 +14,4 @@ public class RegisterRequest {
     private String phoneNumber;
     private String password;
     private String email;
-
-    public String getUsername(){
-        return this.username;
-    }
 }

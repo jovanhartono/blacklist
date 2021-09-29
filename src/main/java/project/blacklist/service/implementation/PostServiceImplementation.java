@@ -6,6 +6,8 @@ import project.blacklist.model.Post;
 import project.blacklist.repository.PostRepository;
 import project.blacklist.service.PostService;
 
+import java.time.LocalDateTime;
+
 @Service
 public class PostServiceImplementation implements PostService {
 
@@ -18,6 +20,7 @@ public class PostServiceImplementation implements PostService {
 
     @Override
     public void createPost() {
-        Post post = Post.builder().build();
+        Post post = Post.builder().title("QNET PENIPOOOO").description("duit ilang ok123lmlkdamdlkamda miliar")
+                .createdAt(LocalDateTime.now()).build();
     }
 }

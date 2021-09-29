@@ -2,10 +2,12 @@ package project.blacklist.service.implementation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import project.blacklist.dto.RegisterRequest;
 import project.blacklist.repository.UserRepository;
 import project.blacklist.model.AppUser;
 import project.blacklist.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +22,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public AppUser loginUser(String email, String password) throws IllegalStateException{
+    public void loginUser(String email, String password) throws IllegalStateException{
         Optional<AppUser> userLogin = userRepository.getAppUserByEmail(email);
         String exceptionMessage = "not match!";
         if (userLogin.isEmpty()){
@@ -29,7 +31,7 @@ public class UserServiceImplementation implements UserService {
         else{
             int isPasswordMatch = userLogin.get().getPassword().compareTo(password);
             if (isPasswordMatch == 0){
-                return userLogin.get();
+//                return userLogin.get();
             }
             else throw new IllegalStateException("password " + exceptionMessage);
         }
@@ -61,6 +63,23 @@ public class UserServiceImplementation implements UserService {
                     .build();
 
             userRepository.save(appUser);
+        }
+    }
+
+    @Override
+    public List<AppUser> getAllAppUser(){
+        return userRepository.findAll();
+    }
+
+    @Override
+    public void registerUserList(List<RegisterRequest> userList) throws IllegalStateException{
+        for (RegisterRequest user : userList){
+            try {
+                this.registerUser(user.getUsername(), user.getPhoneNumber(), user.getPassword(), user.getEmail());
+            }
+            catch (IllegalStateException e){
+                throw new IllegalStateException(e);
+            }
         }
     }
 }

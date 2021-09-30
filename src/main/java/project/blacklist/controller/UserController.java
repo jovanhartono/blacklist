@@ -10,11 +10,11 @@ import project.blacklist.service.UserService;
 
 @RestController
 @RequestMapping("/api")
-public class MainController {
+public class UserController {
     private final UserService userService;
 
     @Autowired
-    public MainController(UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 

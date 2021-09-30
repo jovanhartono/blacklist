@@ -1,17 +1,25 @@
 package project.blacklist.service.implementation;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import project.blacklist.dto.RegisterRequest;
 import project.blacklist.repository.UserRepository;
 import project.blacklist.model.AppUser;
 import project.blacklist.service.UserService;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
+
 @Service
-public class UserServiceImplementation implements UserService {
+public class UserServiceImplementation implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     public static final String DELIMITER = " | ";
@@ -19,6 +27,19 @@ public class UserServiceImplementation implements UserService {
     @Autowired
     public UserServiceImplementation(UserRepository userRepository){
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<AppUser> appUser = userRepository.getAppUserByUsername(username);
+        AppUser user = appUser.orElseThrow(() -> new UsernameNotFoundException("No user " +
+                "Found with username : " + username));
+        return new org.springframework.security.core.userdetails.User
+                (user.getUsername(), user.getPassword(), getAuthorities("USER"));
+    }
+
+    private Collection<? extends GrantedAuthority> getAuthorities(String role) {
+        return singletonList(new SimpleGrantedAuthority(role));
     }
 
     @Override

@@ -1,11 +1,13 @@
 package project.blacklist.service.implementation;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import project.blacklist.dto.RegisterRequest;
 import project.blacklist.repository.UserRepository;
@@ -23,19 +25,20 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
 
     private final UserRepository userRepository;
     public static final String DELIMITER = " | ";
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserServiceImplementation(UserRepository userRepository){
+    public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<AppUser> appUser = userRepository.getAppUserByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<AppUser> appUser = userRepository.getAppUserByEmail(email);
         AppUser user = appUser.orElseThrow(() -> new UsernameNotFoundException("No user " +
-                "Found with username : " + username));
+                "Found with username : " + email));
         return new org.springframework.security.core.userdetails.User
-                (user.getUsername(), user.getPassword(), getAuthorities("USER"));
+                (user.getEmail(), user.getPassword(), getAuthorities("USER"));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(String role) {
@@ -79,8 +82,12 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
             throw new IllegalStateException(exceptionMessage);
         }
         else{
+            String encodedPassword = passwordEncoder.encode(password);
             AppUser appUser = AppUser.builder()
-                    .username(username).email(email).password(password).phoneNumber(phoneNumber)
+                    .username(username)
+                    .email(email)
+                    .password(encodedPassword)
+                    .phoneNumber(phoneNumber)
                     .build();
 
             userRepository.save(appUser);

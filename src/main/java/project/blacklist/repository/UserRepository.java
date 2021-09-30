@@ -7,7 +7,7 @@ import project.blacklist.model.AppUser;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<AppUser, String> {
+public interface UserRepository extends JpaRepository<AppUser, Long> {
     Optional<AppUser> getAppUserByEmail(String email);
     Optional<AppUser> getAppUserByUsername(String username);
     Optional<AppUser> getAppUserByPhoneNumber(String phoneNumber);

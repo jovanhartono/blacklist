@@ -14,10 +14,11 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Builder
 public class AppUser {
+    @Column(nullable = false)
     @Id
     @SequenceGenerator(name = "user_sequence",
     sequenceName = "user_sequence", allocationSize = 1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "user_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
     private Long userID;
     @Column(unique = true)
     @NotNull

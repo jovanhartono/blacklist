@@ -16,9 +16,7 @@ import javax.validation.constraints.NotNull;
 public class AppUser {
     @Column(nullable = false)
     @Id
-    @SequenceGenerator(name = "user_sequence",
-    sequenceName = "user_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userID;
     @Column(unique = true)
     @NotNull
@@ -31,4 +29,7 @@ public class AppUser {
     @NotNull
     @Column(unique = true)
     private String phoneNumber;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "roleID", referencedColumnName = "roleID", nullable = false)
+    private Role role;
 }

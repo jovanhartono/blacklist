@@ -29,6 +29,6 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false)
     private AppUser appUser;
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Suspect> suspect;
 }

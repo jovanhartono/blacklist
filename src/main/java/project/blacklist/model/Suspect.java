@@ -22,6 +22,6 @@ public class Suspect {
     private String name;
     private String phoneNumber;
     private String accountPayment;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "suspect")
     private List<Post> post;
 }

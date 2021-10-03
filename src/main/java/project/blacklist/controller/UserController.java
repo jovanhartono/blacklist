@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import project.blacklist.dto.RegisterRequest;
 import project.blacklist.service.UserService;
 
+import javax.management.relation.RoleNotFoundException;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/auth")
 public class UserController {
     private final UserService userService;
 
@@ -27,7 +29,7 @@ public class UserController {
                     appUserRegistered.getEmail());
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
-        catch (IllegalStateException e){
+        catch (IllegalStateException | RoleNotFoundException e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }

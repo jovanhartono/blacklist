@@ -1,6 +1,5 @@
 package project.blacklist.service.implementation;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,10 +9,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import project.blacklist.dto.RegisterRequest;
+import project.blacklist.model.Role;
+import project.blacklist.repository.RoleRepository;
 import project.blacklist.repository.UserRepository;
 import project.blacklist.model.AppUser;
 import project.blacklist.service.UserService;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +26,15 @@ import static java.util.Collections.singletonList;
 public class UserServiceImplementation implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    public static final String DELIMITER = " | ";
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    public static final String DELIMITER = " | ";
 
-    public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    @Autowired
+    public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -37,8 +42,10 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
         Optional<AppUser> appUser = userRepository.getAppUserByEmail(email);
         AppUser user = appUser.orElseThrow(() -> new UsernameNotFoundException("No user " +
                 "Found with username : " + email));
+        Optional<Role> role = roleRepository.getRoleByRoleID(user.getRole().getRoleID());
+        Role userRole = role.orElseThrow(() -> new UsernameNotFoundException("Role not found"));
         return new org.springframework.security.core.userdetails.User
-                (user.getEmail(), user.getPassword(), getAuthorities("USER"));
+                (user.getEmail(), user.getPassword(), getAuthorities(userRole.getType()));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(String role) {
@@ -46,26 +53,12 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     }
 
     @Override
-    public void loginUser(String email, String password) throws IllegalStateException{
-        Optional<AppUser> userLogin = userRepository.getAppUserByEmail(email);
-        String exceptionMessage = "not match!";
-        if (userLogin.isEmpty()){
-            throw new IllegalStateException("email " + exceptionMessage);
-        }
-        else{
-            int isPasswordMatch = userLogin.get().getPassword().compareTo(password);
-            if (isPasswordMatch == 0){
-//                return userLogin.get();
-            }
-            else throw new IllegalStateException("password " + exceptionMessage);
-        }
-    }
-
-    @Override
-    public void registerUser(String username, String phoneNumber, String password, String email) throws IllegalStateException{
+    public void registerUser(String username, String phoneNumber, String password, String email) throws IllegalStateException, RoleNotFoundException{
         Optional<AppUser> userByEmail = userRepository.getAppUserByEmail(email);
         Optional<AppUser> userByPhoneNumber = userRepository.getAppUserByPhoneNumber(phoneNumber);
         Optional<AppUser> userByUsername = userRepository.getAppUserByUsername(username);
+        Optional<Role> roleByType = roleRepository.getRoleByType("USER");
+        Role userRole = roleByType.orElseThrow(() -> new RoleNotFoundException("Role finder error!"));
 
         if (userByEmail.isPresent() || userByUsername.isPresent() || userByPhoneNumber.isPresent()){
             String exceptionMessage = "already exist!";
@@ -88,6 +81,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
                     .email(email)
                     .password(encodedPassword)
                     .phoneNumber(phoneNumber)
+                    .role(userRole)
                     .build();
 
             userRepository.save(appUser);
@@ -105,7 +99,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
             try {
                 this.registerUser(user.getUsername(), user.getPhoneNumber(), user.getPassword(), user.getEmail());
             }
-            catch (IllegalStateException e){
+            catch (IllegalStateException | RoleNotFoundException e){
                 throw new IllegalStateException(e);
             }
         }

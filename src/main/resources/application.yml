@@ -2,10 +2,10 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/blacklist
     username: postgres
-    password: Hartono7213
+    password: hartono7213
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQL81Dialect

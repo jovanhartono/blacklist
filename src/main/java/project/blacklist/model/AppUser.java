@@ -29,7 +29,7 @@ public class AppUser {
     @NotNull
     @Column(unique = true)
     private String phoneNumber;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "roleID", referencedColumnName = "roleID", nullable = false)
     private Role role;
 }

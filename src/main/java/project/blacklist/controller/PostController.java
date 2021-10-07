@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import project.blacklist.dto.PostRequest;
 import project.blacklist.service.PostService;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/post")
 public class PostController {
@@ -21,8 +23,8 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createPost(@RequestBody PostRequest postRequest){
-        this.postService.createPost(postRequest);
+    public ResponseEntity<Void> createPost(@RequestBody PostRequest postRequest, Principal principal){
+        this.postService.createPost(postRequest, principal.getName());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -1,5 +1,6 @@
 package project.blacklist.service.implementation;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.blacklist.dto.PostRequest;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class PostServiceImplementation implements PostService {
 
     private final PostRepository postRepository;
@@ -25,14 +27,13 @@ public class PostServiceImplementation implements PostService {
     }
 
     @Override
-    public void createPost(PostRequest postRequest) {
+    public void createPost(PostRequest postRequest, String email) {
         String title = postRequest.getTitle();
         String description = postRequest.getDescription();
         LocalDateTime createdAt = LocalDateTime.now();
         Integer defaultLike = 0;
-        Long userID = (long) 1;
 
-        Optional<AppUser> appUser = this.userRepository.findById(userID);
+        Optional<AppUser> appUser = this.userRepository.getAppUserByEmail(email);
         if(appUser.isPresent()){
             Post post = Post.builder().title(title).description(description).createdAt(createdAt)
                         .likeCount(defaultLike).appUser(appUser.get()).build();

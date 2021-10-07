@@ -5,5 +5,5 @@ import project.blacklist.dto.PostRequest;
 
 @Service
 public interface PostService {
-    void createPost(PostRequest postRequest);
+    void createPost(PostRequest postRequest, String email);
 }

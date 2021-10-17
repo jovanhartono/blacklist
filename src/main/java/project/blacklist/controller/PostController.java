@@ -1,5 +1,6 @@
 package project.blacklist.controller;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -39,7 +40,18 @@ public class PostController {
                                                    Principal principal) throws IOException {
         PostRequest postRequest = PostRequest.builder().title(title).description(description).build();
         this.postService.createPost(postRequest, principal.getName(), postImages);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/delete/{post-id}")
+    public ResponseEntity<String> deletePost(@PathVariable("post-id") Long postId) {
+        try {
+            this.postService.deletePost(postId);
+            return new ResponseEntity<>("Post successfully deleted.", HttpStatus.OK);
+        }
+        catch (NotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/get-image/{imagename}")

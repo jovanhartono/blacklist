@@ -1,5 +1,6 @@
 package project.blacklist.service.implementation;
 
+import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,5 +75,13 @@ public class PostServiceImplementation implements PostService {
         }
 
 
+    }
+
+    @Override
+    public void deletePost(Long postId) throws NotFoundException {
+        Optional<Post> getPost = this.postRepository.getPostByPostID(postId);
+        Post post = getPost.orElseThrow(() -> new NotFoundException("Post not found!"));
+
+        this.postRepository.deletePostByPostID(post.getPostID());
     }
 }

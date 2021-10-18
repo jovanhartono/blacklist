@@ -34,24 +34,13 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<List<String>> createPost(@RequestParam("title") String title,
+    public ResponseEntity<String> createPost(@RequestParam("title") String title,
                                                    @RequestParam("description") String description,
                                                    @RequestParam(value = "post-images", required = false) List<MultipartFile> postImages,
                                                    Principal principal) throws IOException {
         PostRequest postRequest = PostRequest.builder().title(title).description(description).build();
         this.postService.createPost(postRequest, principal.getName(), postImages);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/delete/{post-id}")
-    public ResponseEntity<String> deletePost(@PathVariable("post-id") Long postId) {
-        try {
-            this.postService.deletePost(postId);
-            return new ResponseEntity<>("Post successfully deleted.", HttpStatus.OK);
-        }
-        catch (NotFoundException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Post Created!");
     }
 
     @GetMapping("/get-image/{imagename}")
@@ -69,4 +58,25 @@ public class PostController {
                 .headers(httpHeaders).body(resource);
     }
 
+    @DeleteMapping("/delete/{post-id}")
+    public ResponseEntity<String> deletePost(@PathVariable("post-id") Long postId) {
+        try {
+            this.postService.deletePost(postId);
+            return new ResponseEntity<>("Post successfully deleted.", HttpStatus.OK);
+        }
+        catch (NotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/edit/{post-id}")
+    public ResponseEntity<String> editPost (@PathVariable("post-id") Long postId, @RequestBody PostRequest postRequest){
+        try{
+            this.postService.editPost(postId, postRequest);
+            return ResponseEntity.status(HttpStatus.OK).body("Edit post success!");
+        }
+        catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

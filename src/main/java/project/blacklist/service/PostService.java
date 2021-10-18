@@ -12,4 +12,5 @@ import java.util.List;
 public interface PostService {
     void createPost(PostRequest postRequest, String email, List<MultipartFile> images) throws IOException;
     void deletePost(Long postId) throws NotFoundException;
+    void editPost(Long postId, PostRequest postRequest) throws NotFoundException;
 }

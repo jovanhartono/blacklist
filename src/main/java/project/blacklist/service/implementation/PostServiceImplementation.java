@@ -1,7 +1,6 @@
 package project.blacklist.service.implementation;
 
 import javassist.NotFoundException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -11,6 +10,7 @@ import project.blacklist.model.AppUser;
 import project.blacklist.model.Post;
 import project.blacklist.model.PostImage;
 import project.blacklist.repository.ImageRepository;
+import project.blacklist.repository.PostImageRepository;
 import project.blacklist.repository.PostRepository;
 import project.blacklist.repository.UserRepository;
 import project.blacklist.service.PostService;
@@ -28,19 +28,21 @@ import static java.nio.file.Paths.get;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Service
-@Slf4j
 public class PostServiceImplementation implements PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
+    private final PostImageRepository postImageRepository;
     public static final String DIRECTORY = "/Users/jovan/Documents/Website/post-image";
 
     @Autowired
-    public PostServiceImplementation(PostRepository postRepository, UserRepository userRepository, ImageRepository imageRepository) {
+    public PostServiceImplementation(PostRepository postRepository, UserRepository userRepository,
+                                     ImageRepository imageRepository, PostImageRepository postImageRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
+        this.postImageRepository = postImageRepository;
     }
 
     @Override
@@ -73,15 +75,26 @@ public class PostServiceImplementation implements PostService {
                 this.imageRepository.saveAll(imagesList);
             }
         }
-
-
     }
 
     @Override
     public void deletePost(Long postId) throws NotFoundException {
         Optional<Post> getPost = this.postRepository.getPostByPostID(postId);
         Post post = getPost.orElseThrow(() -> new NotFoundException("Post not found!"));
-
+        Optional<List<PostImage>> postImageList = this.postImageRepository.getAllByPost(post);
+        if (postImageList.isPresent()){
+            this.postImageRepository.deleteAllByPost(post);
+        }
         this.postRepository.deletePostByPostID(post.getPostID());
+    }
+
+    @Override
+    public void editPost(Long postId, PostRequest postRequest) throws NotFoundException {
+        Post post = this.postRepository.getPostByPostID(postId)
+                .orElseThrow(() -> new NotFoundException("Post not found!"));
+        post.setTitle(postRequest.getTitle());
+        post.setDescription(postRequest.getDescription());
+        post.setSuspect(postRequest.getSuspect());
+        this.postRepository.save(post);
     }
 }

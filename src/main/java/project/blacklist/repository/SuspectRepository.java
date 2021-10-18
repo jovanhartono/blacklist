@@ -6,4 +6,5 @@ import project.blacklist.model.Suspect;
 
 @Repository
 public interface SuspectRepository extends JpaRepository<Suspect, Long> {
+//    Optional<Suspect> getSuspectByAccountPayment
 }

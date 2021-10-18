@@ -21,7 +21,6 @@ public class Suspect {
     @NotNull(message = "suspect name cannot be null or empty!")
     private String name;
     private String phoneNumber;
-    private String accountPayment;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "suspect")
     private List<Post> post;
 }
